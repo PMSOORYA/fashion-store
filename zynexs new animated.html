@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZYNEXS INTELLIGENCE — Intelligent AI Infrastructure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,200;1,9..40,300&family=DM+Mono:wght@300;400&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --black: #050505;
+      --black2: #0A0A0A;
+      --surface: #111111;
+      --surface2: #161616;
+      --border: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(255, 255, 255, 0.12);
+      --text: #F5F5F5;
+      --text-secondary: rgba(245, 245, 245, 0.45);
+      --text-tertiary: rgba(245, 245, 245, 0.2);
+      --accent-cyan: #00E5FF;
+      --accent-lime: #CCFF00;
+      --accent-warm: #E8E8E0;
+      --font: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --mono: 'DM Mono', 'SF Mono', monospace;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease2: cubic-bezier(0.25, 0, 0, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.5;
+      overflow-x: hidden;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===================== CURSOR ===================== */
+    .cursor {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transition: transform 0.15s var(--ease);
+    }
+
+    .cursor-ring {
+      width: 32px;
+      height: 32px;
+      border: 1px dashed rgba(0, 229, 255, 0.4);
+      border-radius: 4px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.4s var(--ease), width 0.3s var(--ease), height 0.3s var(--ease), border-color 0.3s, border-radius 0.3s;
+    }
+
+    .cursor.is-hover {
+      transform: scale(3);
+    }
+
+    .cursor-ring.is-hover {
+      width: 48px;
+      height: 48px;
+      border-color: rgba(204, 255, 0, 0.4);
+      border-radius: 50%;
+      border-style: solid;
+    }
+
+    /* ===================== GLASSMORPHISM SYSTEM ===================== */
+    /* Nav links */
+    .nav-links a {
+      font-size: 12.5px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.25s;
+      position: relative;
+      padding: 5px 12px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .nav-links a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 229, 255, 0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 229, 255, 0.12);
+      border-radius: 4px;
+      opacity: 0;
+      transform: scale(0.88);
+      transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+
+    .nav-links a:hover::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    /* Service cards glassmorphism */
+    .service-card {
+      background: var(--black);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: background 0.35s, box-shadow 0.35s;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.05) 0%, rgba(204, 255, 0, 0.02) 100%);
+      backdrop-filter: blur(0);
+      -webkit-backdrop-filter: blur(0);
+      opacity: 0;
+      transition: opacity 0.4s var(--ease), backdrop-filter 0.4s;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .service-card:hover::before {
+      opacity: 1;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--accent-cyan);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s var(--ease);
+      z-index: 1;
+    }
+
+    .service-card:hover {
+      background: var(--surface);
+      box-shadow: inset 0 0 60px rgba(0, 229, 255, 0.02);
+    }
+
+    .service-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .service-card>* {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Stat items glassmorphism */
+    .stat-item {
+      background: var(--black);
+      padding: 32px 28px;
+      opacity: 0;
+      transform: translateY(16px);
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .stat-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 229, 255, 0.03);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: 0;
+      transition: opacity 0.35s var(--ease);
+      pointer-events: none;
+    }
+
+    .stat-item:hover::after {
+      opacity: 1;
+    }
+
+    /* Principle items glassmorphism */
+    .principle-item {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 24px;
+      padding: 36px 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(16px);
+      cursor: default;
+      transition: background 0.3s, margin 0.3s, padding 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .principle-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 229, 255, 0.025);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-left: 2px solid rgba(0, 229, 255, 0.18);
+      opacity: 0;
+      transition: opacity 0.35s var(--ease);
+      pointer-events: none;
+    }
+
+    .principle-item:hover::before {
+      opacity: 1;
+    }
+
+    .principle-item:hover {
+      background: var(--surface);
+      margin: 0 -48px;
+      padding: 36px 48px;
+    }
+
+    .principle-item>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* KPI card glassmorphism */
+    .kpi-card {
+      background: var(--black);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .kpi-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 229, 255, 0.03);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .kpi-card:hover::after {
+      opacity: 1;
+    }
+
+    .kpi-card:hover {
+      border-color: rgba(0, 229, 255, 0.15);
+    }
+
+    .kpi-card>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Contact cards glassmorphism */
+    .contact-card {
+      background: rgba(255, 255, 255, 0.018);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: border-color 0.35s var(--ease), transform 0.35s var(--ease), box-shadow 0.35s var(--ease), background 0.35s;
+      position: relative;
+    }
+
+    .contact-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 229, 255, 0.04);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity 0.4s var(--ease);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .contact-card:hover::before {
+      opacity: 1;
+    }
+
+    .contact-card:hover {
+      border-color: rgba(0, 229, 255, 0.28);
+      transform: translateX(6px);
+      box-shadow: 0 8px 40px rgba(0, 229, 255, 0.06), -1px 0 0 rgba(0, 229, 255, 0.2);
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      text-decoration: none;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    .contact-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.3s var(--ease);
+    }
+
+    .contact-icon.wa {
+      background: rgba(37, 211, 102, 0.1);
+      border: 1px solid rgba(37, 211, 102, 0.15);
+    }
+
+    .contact-icon.em {
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.12);
+    }
+
+    .contact-icon.li {
+      background: rgba(10, 102, 194, 0.1);
+      border: 1px solid rgba(10, 102, 194, 0.18);
+    }
+
+    .contact-card:hover .contact-icon {
+      transform: scale(1.08);
+    }
+
+    .contact-text-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .contact-text-value {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      display: block;
+      transition: color 0.3s;
+    }
+
+    .contact-card:hover .contact-text-value {
+      color: var(--text);
+    }
+
+    /* CTA button glassmorphism overlay */
+    .btn-primary {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--text);
+      padding: 14px 32px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    .btn-ghost {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .btn-ghost::after {
+      content: '→';
+      transition: transform 0.2s var(--ease);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+    }
+
+    .btn-ghost:hover::after {
+      transform: translateX(4px);
+    }
+
+    .btn-outline {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-hover);
+      padding: 14px 32px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-outline:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* ===================== NAV ===================== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.4s, background 0.4s;
+    }
+
+    nav.scrolled {
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-color: var(--border);
+    }
+
+    .nav-logo {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      opacity: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      opacity: 0;
+    }
+
+    .nav-cta {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--text);
+      padding: 9px 20px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      opacity: 0;
+    }
+
+    .nav-cta:hover {
+      opacity: 0.85;
+    }
+
+    /* ===================== HERO ===================== */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 700px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 48px 80px;
+      overflow: hidden;
+    }
+
+    #hero-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      opacity: 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge::before {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 4px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+    }
+
+    .hero-headline {
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .hero-headline h1 {
+      font-size: clamp(72px, 10vw, 148px);
+      font-weight: 200;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(80px);
+    }
+
+    .hero-headline h1 em {
+      font-style: normal;
+      color: var(--text-tertiary);
+    }
+
+    .hero-sub {
+      position: relative;
+      z-index: 2;
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+      opacity: 0;
+    }
+
+    .hero-sub-item {
+      padding-right: 48px;
+    }
+
+    .hero-sub-item p {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 240px;
+    }
+
+    .hero-sub-item .label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .hero-cta-row {
+      position: relative;
+      z-index: 2;
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      opacity: 0;
+    }
+
+    .hero-scroll-indicator {
+      position: absolute;
+      bottom: 36px;
+      right: 48px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+    }
+
+    .hero-scroll-indicator span {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 64px;
+      background: linear-gradient(to bottom, var(--text-tertiary), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollLine {
+      0% {
+        transform: scaleY(0);
+        transform-origin: top
+      }
+
+      50% {
+        transform: scaleY(1);
+        transform-origin: top
+      }
+
+      51% {
+        transform: scaleY(1);
+        transform-origin: bottom
+      }
+
+      100% {
+        transform: scaleY(0);
+        transform-origin: bottom
+      }
+    }
+
+    /* ===================== SHARED ===================== */
+    section {
+      position: relative;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--text-tertiary);
+    }
+
+    /* ===================== MANIFESTO ===================== */
+    #manifesto {
+      padding: 160px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 120px;
+      align-items: start;
+      border-top: 1px solid var(--border);
+    }
+
+    .manifesto-left .section-label {
+      margin-bottom: 64px;
+    }
+
+    .manifesto-headline {
+      font-size: clamp(40px, 5vw, 72px);
+      font-weight: 200;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      overflow: hidden;
+    }
+
+    .manifesto-headline .line {
+      overflow: hidden;
+      display: block;
+    }
+
+    .manifesto-headline .line span {
+      display: block;
+      transform: translateY(100%);
+    }
+
+    .manifesto-right {
+      padding-top: 120px;
+    }
+
+    .manifesto-right p {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      max-width: 480px;
+      margin-bottom: 32px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .manifesto-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      margin-top: 64px;
+      border: 1px solid var(--border);
+    }
+
+    .stat-num {
+      font-size: 36px;
+      font-weight: 200;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-num em {
+      font-style: normal;
+      color: var(--accent-cyan);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===================== ASSEMBLY ===================== */
+    #assembly {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+    }
+
+    #assembly-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .assembly-text {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .assembly-text .section-label {
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
+    .assembly-text h2 {
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 200;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0;
+    }
+
+    .assembly-text p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 24px;
+      letter-spacing: 0.02em;
+      opacity: 0;
+    }
+
+    /* ===================== SERVICES ===================== */
+    #services {
+      padding: 160px 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .services-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      margin-bottom: 100px;
+      align-items: end;
+    }
+
+    .services-header h2 {
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 200;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      overflow: hidden;
+    }
+
+    .services-header h2 .line {
+      overflow: hidden;
+      display: block;
+    }
+
+    .services-header h2 .line span {
+      display: block;
+      transform: translateY(100%);
+    }
+
+    .services-header .services-intro {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .service-num {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      color: var(--text-tertiary);
+      margin-bottom: 48px;
+      display: block;
+    }
+
+    .service-card h3 {
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .service-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .service-arrow {
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+      font-size: 18px;
+      color: var(--text-tertiary);
+      transition: color 0.3s, transform 0.3s var(--ease);
+    }
+
+    .service-card:hover .service-arrow {
+      color: var(--accent-cyan);
+      transform: translate(3px, -3px);
+    }
+
+    /* ===================== PRODUCT ===================== */
+    #product {
+      padding: 160px 48px;
+      border-top: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .product-header {
+      margin-bottom: 80px;
+    }
+
+    .product-header .section-label {
+      margin-bottom: 32px;
+    }
+
+    .product-header h2 {
+      font-size: clamp(40px, 5.5vw, 80px);
+      font-weight: 200;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      max-width: 800px;
+      overflow: hidden;
+    }
+
+    .product-header h2 .line {
+      overflow: hidden;
+      display: block;
+    }
+
+    .product-header h2 .line span {
+      display: block;
+      transform: translateY(100%);
+    }
+
+    .dashboard-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .dashboard-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dashboard-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dashboard-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border-hover);
+    }
+
+    .dashboard-dots span:first-child {
+      background: #3a3a3a;
+    }
+
+    .dashboard-title-bar {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+    }
+
+    .dashboard-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .dash-action-btn {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .dash-action-btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+      background: rgba(0, 229, 255, 0.04);
+    }
+
+    .dashboard-body {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 520px;
+    }
+
+    .dash-sidebar {
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+    }
+
+    .dash-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .dash-nav-item:hover {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .dash-nav-item.active {
+      background: var(--surface2);
+      color: var(--text);
+      border-left: 2px solid var(--accent-cyan);
+    }
+
+    .dash-nav-item .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--text-tertiary);
+    }
+
+    .dash-nav-item.active .dot {
+      background: var(--accent-cyan);
+    }
+
+    .dash-main {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .dash-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .kpi-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 200;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .kpi-delta {
+      font-size: 11px;
+      color: var(--accent-lime);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .kpi-delta.neg {
+      color: #FF5555;
+    }
+
+    .dash-chart-area {
+      background: var(--black);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 24px;
+      flex: 1;
+    }
+
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .chart-header h4 {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+
+    .chart-period-tabs {
+      display: flex;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .chart-period-tabs button {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      background: var(--black);
+      border: none;
+      color: var(--text-tertiary);
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .chart-period-tabs button.active {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .chart-period-tabs button:hover {
+      color: var(--text);
+    }
+
+    .chart-svg-wrapper {
+      width: 100%;
+      height: 180px;
+      position: relative;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .dash-bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .dash-panel {
+      background: var(--black);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 20px;
+    }
+
+    .dash-panel-header {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .dash-panel-header .badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      padding: 2px 6px;
+      border-radius: 1px;
+    }
+
+    .flow-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .flow-item:last-child {
+      border-bottom: none;
+    }
+
+    .flow-icon {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      flex-shrink: 0;
+    }
+
+    .flow-icon.orange {
+      background: #FF8C42;
+    }
+
+    .flow-icon.lime {
+      background: var(--accent-lime);
+    }
+
+    .flow-name {
+      font-size: 11px;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+
+    .flow-status {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+    }
+
+    .infra-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .infra-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .infra-row:last-child {
+      border-bottom: none;
+    }
+
+    .infra-name {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .infra-bar-wrap {
+      flex: 1;
+      margin: 0 16px;
+      height: 2px;
+      background: var(--surface2);
+      border-radius: 1px;
+    }
+
+    .infra-bar {
+      height: 100%;
+      background: var(--accent-cyan);
+      border-radius: 1px;
+    }
+
+    .infra-val {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+    }
+
+    /* ===================== PHILOSOPHY ===================== */
+    #philosophy {
+      padding: 160px 48px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 160px;
+      align-items: center;
+    }
+
+    .philosophy-left .section-label {
+      margin-bottom: 48px;
+    }
+
+    .philosophy-left h2 {
+      font-size: clamp(36px, 4.5vw, 64px);
+      font-weight: 200;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      overflow: hidden;
+    }
+
+    .philosophy-left h2 .line {
+      overflow: hidden;
+      display: block;
+    }
+
+    .philosophy-left h2 .line span {
+      display: block;
+      transform: translateY(100%);
+    }
+
+    .philosophy-left>p {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-top: 40px;
+      max-width: 440px;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    .philosophy-right {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .principle-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--text-tertiary);
+      padding-top: 4px;
+    }
+
+    .principle-content h4 {
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+
+    .principle-content p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ===================== CONTACT ===================== */
+    #contact {
+      padding: 140px 48px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 120px;
+      align-items: start;
+    }
+
+    .contact-left .section-label {
+      margin-bottom: 40px;
+    }
+
+    .contact-left h2 {
+      font-size: clamp(36px, 4.5vw, 64px);
+      font-weight: 200;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      overflow: hidden;
+    }
+
+    .contact-left h2 .line {
+      overflow: hidden;
+      display: block;
+    }
+
+    .contact-left h2 .line span {
+      display: block;
+      transform: translateY(100%);
+    }
+
+    .contact-left>p {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-top: 32px;
+      max-width: 380px;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    .contact-right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 64px;
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    .contact-location {
+      margin-top: 24px;
+      padding: 0 4px;
+    }
+
+    .contact-location .loc-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .contact-location .loc-val {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    /* ===================== CTA ===================== */
+    #cta {
+      padding: 160px 48px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0, 229, 255, 0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    #cta .section-label {
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+
+    #cta h2 {
+      font-size: clamp(48px, 7vw, 120px);
+      font-weight: 200;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 48px;
+      overflow: hidden;
+    }
+
+    #cta h2 .line {
+      overflow: hidden;
+      display: block;
+    }
+
+    #cta h2 .line span {
+      display: block;
+      transform: translateY(100%);
+    }
+
+    #cta p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      font-weight: 300;
+      max-width: 420px;
+      margin: 0 auto 56px;
+      line-height: 1.75;
+      opacity: 0;
+    }
+
+    .cta-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      opacity: 0;
+    }
+
+    /* ===================== FOOTER ===================== */
+    footer {
+      padding: 60px 48px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .footer-brand .logo {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .footer-brand p {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      line-height: 1.7;
+      font-weight: 300;
+      max-width: 200px;
+    }
+
+    .footer-col h5 {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 16px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer-col ul a {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 300;
+      transition: color 0.2s;
+    }
+
+    .footer-col ul a:hover {
+      color: var(--text);
+    }
+
+    .footer-bottom {
+      padding: 24px 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-bottom p {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-hover);
+      border-radius: 2px;
+    }
+
+    ::selection {
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--text);
+    }
+
+    /* ===================== TICKER ===================== */
+    .ticker-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      padding: 16px 0;
+      background: var(--black);
+    }
+
+    .ticker {
+      display: flex;
+      white-space: nowrap;
+      animation: ticker 30s linear infinite;
+    }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      padding-right: 48px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+
+    .ticker-item .sep {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      display: inline-block;
+      opacity: 0.4;
+    }
+
+    @keyframes ticker {
+      from {
+        transform: translateX(0)
+      }
+
+      to {
+        transform: translateX(-50%)
+      }
+    }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width:1024px) {
+      .hero-sub {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding-top: 32px;
+      }
+
+      .hero-sub-item {
+        padding-right: 0;
+      }
+
+      #manifesto {
+        grid-template-columns: 1fr;
+        gap: 64px;
+        padding: 100px 32px;
+      }
+
+      .manifesto-right {
+        padding-top: 0;
+      }
+
+      .services-header {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        margin-bottom: 64px;
+      }
+
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      #philosophy {
+        grid-template-columns: 1fr;
+        gap: 80px;
+        padding: 100px 32px;
+      }
+
+      .principle-item:hover {
+        margin: 0;
+        padding: 36px 0;
+        background: transparent;
+      }
+
+      #contact {
+        grid-template-columns: 1fr;
+        gap: 60px;
+        padding: 80px 32px;
+      }
+
+      .contact-right {
+        padding-top: 0;
+      }
+
+      footer {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width:768px) {
+      nav {
+        padding: 0 24px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      #hero {
+        padding: 0 24px 60px;
+        min-height: 600px;
+      }
+
+      .hero-headline h1 {
+        font-size: clamp(48px, 12vw, 80px);
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #services,
+      #product,
+      #cta,
+      #contact {
+        padding: 80px 24px;
+      }
+
+      .product-header h2 {
+        font-size: clamp(32px, 8vw, 56px);
+      }
+
+      .dashboard-body {
+        grid-template-columns: 1fr;
+      }
+
+      .dash-sidebar {
+        display: flex;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 12px 0;
+        gap: 16px;
+      }
+
+      .dash-nav-item {
+        white-space: nowrap;
+        padding: 8px 12px;
+      }
+
+      .dash-kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dash-bottom-row {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+      }
+
+      footer {
+        grid-template-columns: 1fr;
+        padding: 60px 24px;
+        gap: 32px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        padding: 24px;
+        text-align: center;
+      }
+
+      .cursor,
+      .cursor-ring {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav id="mainNav">
+    <a href="#" class="nav-logo" id="navLogo">Zynexs Intelligence</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#product">Platform</a></li>
+      <li><a href="#philosophy">Principles</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta" id="navCta">Get Started</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-badge" id="heroBadge">AI Infrastructure Platform &mdash; Est. 2024</div>
+    <div class="hero-headline">
+      <h1 id="heroH1">ZYNEXS<br><em>INTELLIGENCE</em></h1>
+    </div>
+    <div class="hero-sub" id="heroSub">
+      <div class="hero-sub-item">
+        <span class="label">01 — Mission</span>
+        <p>Intelligent infrastructure for enterprises that demand precision, scale, and zero compromise.</p>
+      </div>
+      <div class="hero-sub-item">
+        <span class="label">02 — Capability</span>
+        <p>Agentic AI systems, autonomous workflows, and deep enterprise integration — engineered to last.</p>
+      </div>
+      <div class="hero-sub-item">
+        <span class="label">03 — Approach</span>
+        <p>We build AI infrastructure like architecture: thoughtfully, methodically, and for permanence.</p>
+      </div>
+    </div>
+    <div class="hero-cta-row" id="heroCta">
+      <a href="#product" class="btn-primary">Explore Platform</a>
+      <a href="#services" class="btn-ghost">View Services</a>
+    </div>
+    <div class="hero-scroll-indicator" id="heroScroll">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <div class="ticker-item">AI Automation <span class="sep"></span> Agentic Systems <span class="sep"></span>
+        Workflow Engineering <span class="sep"></span> Enterprise AI <span class="sep"></span> Intelligent
+        Infrastructure <span class="sep"></span> AI Consulting <span class="sep"></span> Digital Transformation <span
+          class="sep"></span></div>
+      <div class="ticker-item" aria-hidden="true">AI Automation <span class="sep"></span> Agentic Systems <span
+          class="sep"></span> Workflow Engineering <span class="sep"></span> Enterprise AI <span class="sep"></span>
+        Intelligent Infrastructure <span class="sep"></span> AI Consulting <span class="sep"></span> Digital
+        Transformation <span class="sep"></span></div>
+    </div>
+  </div>
+
+  <!-- MANIFESTO -->
+  <section id="manifesto">
+    <div class="manifesto-left">
+      <div class="section-label">Philosophy</div>
+      <h2 class="manifesto-headline" id="manifestoH">
+        <span class="line"><span>Intelligence</span></span>
+        <span class="line"><span>is not a feature.</span></span>
+        <span class="line"><span>It is the</span></span>
+        <span class="line"><span>foundation.</span></span>
+      </h2>
+    </div>
+    <div class="manifesto-right">
+      <p id="manifestoP1">We are not building chatbots. We are not selling prompts. We are engineering the AI
+        infrastructure layer that will define how the next generation of companies operate.</p>
+      <p id="manifestoP2">Zynexs Intelligence exists at the intersection of systems thinking and machine intelligence —
+        where precision engineering meets autonomous decision-making.</p>
+      <div class="manifesto-stats">
+        <div class="stat-item" id="stat1">
+          <div class="stat-num">99<em>%</em></div>
+          <div class="stat-label">Automation Accuracy</div>
+        </div>
+        <div class="stat-item" id="stat2">
+          <div class="stat-num">10<em>×</em></div>
+          <div class="stat-label">Workflow Velocity</div>
+        </div>
+        <div class="stat-item" id="stat3">
+          <div class="stat-num">0<em>ms</em></div>
+          <div class="stat-label">Inference Latency Goal</div>
+        </div>
+        <div class="stat-item" id="stat4">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Scalability Ceiling</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASSEMBLY SCENE -->
+  <section id="assembly">
+    <canvas id="assembly-canvas"></canvas>
+    <div class="assembly-text">
+      <div class="section-label">System Architecture</div>
+      <h2 id="assemblyH">Systems that<br>build themselves.</h2>
+      <p id="assemblyP">Procedural AI infrastructure. Modular. Self-organizing. Intelligent.</p>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="services-header">
+      <h2 id="servicesH">
+        <span class="line"><span>What we</span></span>
+        <span class="line"><span>engineer.</span></span>
+      </h2>
+      <p class="services-intro" id="servicesIntro">Six core capabilities. Each one a complete discipline. All of them
+        engineered with the same obsessive precision that defines everything we build.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card" id="svc1"><span class="service-num">01</span>
+        <h3>AI Automation</h3>
+        <p>End-to-end process automation powered by production-grade AI. Not demos. Not prototypes. Systems that run.
+        </p>
+        <div class="service-arrow">↗</div>
+      </div>
+      <div class="service-card" id="svc2"><span class="service-num">02</span>
+        <h3>Agentic AI Systems</h3>
+        <p>Autonomous agents that reason, decide, and act — coordinated across complex multi-step workflows without
+          human intervention.</p>
+        <div class="service-arrow">↗</div>
+      </div>
+      <div class="service-card" id="svc3"><span class="service-num">03</span>
+        <h3>AI Infrastructure</h3>
+        <p>The foundational layer. Model selection, deployment architecture, vector systems, API orchestration —
+          engineered for scale.</p>
+        <div class="service-arrow">↗</div>
+      </div>
+      <div class="service-card" id="svc4"><span class="service-num">04</span>
+        <h3>Workflow Engineering</h3>
+        <p>We map, redesign, and rebuild operational workflows around intelligence — eliminating friction at the system
+          level.</p>
+        <div class="service-arrow">↗</div>
+      </div>
+      <div class="service-card" id="svc5"><span class="service-num">05</span>
+        <h3>Intelligent Operations</h3>
+        <p>Real-time decision intelligence. Live monitoring, anomaly detection, and autonomous operations management.
+        </p>
+        <div class="service-arrow">↗</div>
+      </div>
+      <div class="service-card" id="svc6"><span class="service-num">06</span>
+        <h3>Enterprise Integration</h3>
+        <p>Deep integration with existing enterprise systems. CRMs, ERPs, data warehouses — connected through AI at
+          every layer.</p>
+        <div class="service-arrow">↗</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT -->
+  <section id="product">
+    <div class="product-header">
+      <div class="section-label">Platform</div>
+      <h2 id="productH">
+        <span class="line"><span>The operating</span></span>
+        <span class="line"><span>system for</span></span>
+        <span class="line"><span>AI companies.</span></span>
+      </h2>
+    </div>
+    <div class="dashboard-wrapper" id="dashWrapper">
+      <div class="dashboard-topbar">
+        <div class="dashboard-dots"><span></span><span></span><span></span></div>
+        <div class="dashboard-title-bar">ZYNEXS / Intelligence Console — v2.4.1</div>
+        <div class="dashboard-actions">
+          <button class="dash-action-btn">Deploy</button>
+          <button class="dash-action-btn">Monitor</button>
+        </div>
+      </div>
+      <div class="dashboard-body">
+        <div class="dash-sidebar">
+          <div class="dash-nav-item active"><span class="dot"></span> Overview</div>
+          <div class="dash-nav-item"><span class="dot"></span> AI Agents</div>
+          <div class="dash-nav-item"><span class="dot"></span> Workflows</div>
+          <div class="dash-nav-item"><span class="dot"></span> Pipelines</div>
+          <div class="dash-nav-item"><span class="dot"></span> Models</div>
+          <div class="dash-nav-item"><span class="dot"></span> Analytics</div>
+          <div class="dash-nav-item"><span class="dot"></span> Infrastructure</div>
+          <div class="dash-nav-item"><span class="dot"></span> Integrations</div>
+          <div class="dash-nav-item"><span class="dot"></span> Settings</div>
+        </div>
+        <div class="dash-main">
+          <div class="dash-kpi-row">
+            <div class="kpi-card">
+              <div class="kpi-label">Active Agents</div>
+              <div class="kpi-value">247</div>
+              <div class="kpi-delta">↑ 12.4%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Tasks / Hour</div>
+              <div class="kpi-value">18.3K</div>
+              <div class="kpi-delta">↑ 8.1%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Accuracy Rate</div>
+              <div class="kpi-value">99.2%</div>
+              <div class="kpi-delta">↑ 0.3%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Cost Saved</div>
+              <div class="kpi-value">$84K</div>
+              <div class="kpi-delta">↑ 22%</div>
+            </div>
+          </div>
+          <div class="dash-chart-area">
+            <div class="chart-header">
+              <h4>Workflow Intelligence · Throughput</h4>
+              <div class="chart-period-tabs"><button>1D</button><button>7D</button><button
+                  class="active">30D</button><button>90D</button></div>
+            </div>
+            <div class="chart-svg-wrapper">
+              <svg class="chart-svg" viewBox="0 0 800 180" preserveAspectRatio="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#00E5FF" stop-opacity="0.12" />
+                    <stop offset="100%" stop-color="#00E5FF" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+                <line x1="0" y1="36" x2="800" y2="36" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+                <line x1="0" y1="72" x2="800" y2="72" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+                <line x1="0" y1="108" x2="800" y2="108" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+                <line x1="0" y1="144" x2="800" y2="144" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+                <path
+                  d="M0 130 C50 120,80 110,130 100 C180 90,200 115,260 95 C310 80,340 70,390 65 C440 60,460 80,510 60 C560 40,590 50,640 35 C690 20,720 30,800 20 L800 180 L0 180 Z"
+                  fill="url(#chartGrad)" />
+                <path
+                  d="M0 130 C50 120,80 110,130 100 C180 90,200 115,260 95 C310 80,340 70,390 65 C440 60,460 80,510 60 C560 40,590 50,640 35 C690 20,720 30,800 20"
+                  fill="none" stroke="#00E5FF" stroke-width="1.5" />
+                <path
+                  d="M0 150 C50 145,80 140,130 138 C180 135,200 142,260 135 C310 128,340 124,390 118 C440 112,460 120,510 110 C560 100,590 106,640 98 C690 90,720 95,800 88"
+                  fill="none" stroke="rgba(204,255,0,0.4)" stroke-width="1" stroke-dasharray="4,4" />
+              </svg>
+            </div>
+          </div>
+          <div class="dash-bottom-row">
+            <div class="dash-panel">
+              <div class="dash-panel-header">Active Workflows <span class="badge">LIVE</span></div>
+              <div class="flow-item"><span class="flow-icon"></span><span class="flow-name">Lead Qualification
+                  Agent</span><span class="flow-status">Running · 2.1s</span></div>
+              <div class="flow-item"><span class="flow-icon lime"></span><span class="flow-name">Invoice Processing
+                  Pipeline</span><span class="flow-status">Complete · 0.8s</span></div>
+              <div class="flow-item"><span class="flow-icon orange"></span><span class="flow-name">Customer Support
+                  Router</span><span class="flow-status">Queued · 412ms</span></div>
+              <div class="flow-item"><span class="flow-icon"></span><span class="flow-name">Data Enrichment
+                  Batch</span><span class="flow-status">Running · 4.7s</span></div>
+            </div>
+            <div class="dash-panel">
+              <div class="dash-panel-header">Infrastructure Load</div>
+              <div class="infra-list">
+                <div class="infra-row"><span class="infra-name">Inference Cluster A</span>
+                  <div class="infra-bar-wrap">
+                    <div class="infra-bar" style="width:78%"></div>
+                  </div><span class="infra-val">78%</span>
+                </div>
+                <div class="infra-row"><span class="infra-name">Vector Database</span>
+                  <div class="infra-bar-wrap">
+                    <div class="infra-bar" style="width:43%"></div>
+                  </div><span class="infra-val">43%</span>
+                </div>
+                <div class="infra-row"><span class="infra-name">Agent Orchestrator</span>
+                  <div class="infra-bar-wrap">
+                    <div class="infra-bar" style="width:91%"></div>
+                  </div><span class="infra-val">91%</span>
+                </div>
+                <div class="infra-row"><span class="infra-name">API Gateway</span>
+                  <div class="infra-bar-wrap">
+                    <div class="infra-bar" style="width:29%"></div>
+                  </div><span class="infra-val">29%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <section id="philosophy">
+    <div class="philosophy-left">
+      <div class="section-label">Our Principles</div>
+      <h2 id="philosophyH">
+        <span class="line"><span>Designed for</span></span>
+        <span class="line"><span>permanence,</span></span>
+        <span class="line"><span>not trends.</span></span>
+      </h2>
+      <p id="philosophyP">Every decision at Zynexs is made through a single lens: will this still be the right choice in
+        ten years? We build for the long arc.</p>
+    </div>
+    <div class="philosophy-right">
+      <div class="principle-item" id="p1"><span class="principle-num">01</span>
+        <div class="principle-content">
+          <h4>Precision over velocity</h4>
+          <p>We do not rush. Every system we build is rigorously designed before a single line of code is written.</p>
+        </div>
+      </div>
+      <div class="principle-item" id="p2"><span class="principle-num">02</span>
+        <div class="principle-content">
+          <h4>Infrastructure thinking</h4>
+          <p>We treat AI like infrastructure — not as an add-on, but as the load-bearing layer of modern enterprise
+            operations.</p>
+        </div>
+      </div>
+      <div class="principle-item" id="p3"><span class="principle-num">03</span>
+        <div class="principle-content">
+          <h4>Restraint as a discipline</h4>
+          <p>The best systems are the ones you don't notice. We engineer for invisibility, not spectacle.</p>
+        </div>
+      </div>
+      <div class="principle-item" id="p4"><span class="principle-num">04</span>
+        <div class="principle-content">
+          <h4>Radical ownership</h4>
+          <p>We take complete responsibility for every system we build — from architecture to deployment to evolution.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact">
+    <div class="contact-left">
+      <div class="section-label">Get in Touch</div>
+      <h2 id="contactH">
+        <span class="line"><span>Let's build</span></span>
+        <span class="line"><span>something</span></span>
+        <span class="line"><span>remarkable.</span></span>
+      </h2>
+      <p id="contactP">We don't do sales calls. We do engineering conversations. Reach out through any channel — we
+        respond with intent, not templates.</p>
+    </div>
+
+    <div class="contact-right" id="contactRight">
+
+      <!-- WhatsApp → opens WhatsApp chat -->
+      <div class="contact-card">
+        <a href="https://wa.me/918086716306" class="contact-link" target="_blank" rel="noopener noreferrer">
+          <div class="contact-icon wa">
+            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"
+                fill="#25D366" />
+            </svg>
+          </div>
+          <div>
+            <span class="contact-text-label">WhatsApp</span>
+            <span class="contact-text-value">+91 80867 16306</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Email → opens mail client -->
+      <div class="contact-card">
+        <a href="mailto:hello@zynexs.com" class="contact-link">
+          <div class="contact-icon em">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#00E5FF"
+                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <polyline points="22,6 12,13 2,6" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div>
+            <span class="contact-text-label">Email</span>
+            <span class="contact-text-value">hello@zynexs.com</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- LinkedIn → opens LinkedIn company page -->
+      <div class="contact-card">
+        <a href="https://www.linkedin.com/company/zynexs-intelligence" class="contact-link" target="_blank"
+          rel="noopener noreferrer">
+          <div class="contact-icon li">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z" stroke="#0A66C2"
+                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <rect x="2" y="9" width="4" height="12" stroke="#0A66C2" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <circle cx="4" cy="4" r="2" stroke="#0A66C2" stroke-width="1.5" />
+            </svg>
+          </div>
+          <div>
+            <span class="contact-text-label">LinkedIn</span>
+            <span class="contact-text-value">Zynexs Intelligence</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="contact-location">
+        <span class="loc-label">Based in</span>
+        <span class="loc-val">Kozhikode, Kerala, India &mdash; serving clients globally.</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta">
+    <div class="cta-bg"></div>
+    <div class="section-label">Begin</div>
+    <h2 id="ctaH">
+      <span class="line"><span>Build what</span></span>
+      <span class="line"><span>lasts.</span></span>
+    </h2>
+    <p id="ctaP">A conversation to understand what you're building. No sales deck. No generic pitch. Just an honest
+      engineering discussion.</p>
+    <div class="cta-buttons" id="ctaButtons">
+      <a href="https://wa.me/918086716306" class="btn-primary" target="_blank" rel="noopener">Start on WhatsApp</a>
+      <a href="mailto:hello@zynexs.com" class="btn-outline">Send an Email</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">
+      <span class="logo">Zynexs Intelligence</span>
+      <p>AI infrastructure for companies that build for the long run.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="#services">AI Automation</a></li>
+        <li><a href="#services">Agentic Systems</a></li>
+        <li><a href="#services">AI Infrastructure</a></li>
+        <li><a href="#services">Workflow Engineering</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#philosophy">Principles</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Connect</h5>
+      <ul>
+        <li><a href="https://www.linkedin.com/company/zynexs-intelligence" target="_blank" rel="noopener">LinkedIn</a>
+        </li>
+        <li><a href="https://wa.me/918086716306" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="mailto:hello@zynexs.com">hello@zynexs.com</a></li>
+        <li><a href="tel:+918086716306">+91 80867 16306</a></li>
+      </ul>
+    </div>
+  </footer>
+  <div class="footer-bottom">
+    <p>© 2024 Zynexs Intelligence Private Limited. Kozhikode, Kerala, India.</p>
+    <p>Engineered with precision.</p>
+  </div>
+
+  <script>
+    // CURSOR
+    const cursor = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0, ringRot = 0;
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.transform = `translate(${mouseX - 4}px,${mouseY - 4}px)`;
+    });
+    function animateRing() {
+      ringX += (mouseX - ringX - 16) * 0.12;
+      ringY += (mouseY - ringY - 16) * 0.12;
+      ringRot += 2;
+      cursorRing.style.transform = `translate(${ringX}px,${ringY}px) rotate(${ringRot}deg)`;
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    document.querySelectorAll('a,button,.service-card,.dash-nav-item,.principle-item,.contact-card,.stat-item').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursor.classList.add('is-hover'); cursorRing.classList.add('is-hover'); });
+      el.addEventListener('mouseleave', () => { cursor.classList.remove('is-hover'); cursorRing.classList.remove('is-hover'); });
+    });
+
+    // TEXT SCRAMBLE
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    document.querySelectorAll('.nav-links a,.btn-primary,.btn-outline,.dash-action-btn').forEach(el => {
+      el.addEventListener('mouseenter', event => {
+        let iterations = 0;
+        const target = event.target;
+        const orig = target.dataset.orig || target.innerText;
+        if (!target.dataset.orig) target.dataset.orig = orig;
+        clearInterval(target.interval);
+        target.interval = setInterval(() => {
+          target.innerText = orig.split("").map((l, i) => {
+            if (l === " ") return " ";
+            if (i < iterations) return orig[i];
+            return chars[Math.floor(Math.random() * chars.length)];
+          }).join("");
+          if (iterations >= orig.length) clearInterval(target.interval);
+          iterations += 0.5;
+        }, 30);
+      });
+    });
+
+    // NAV SCROLL
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40), { passive: true });
+
+    // GSAP
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.to(['#navLogo', '#navLinks', '#navCta'], { opacity: 1, duration: 1, stagger: 0.1, delay: 2.5, ease: 'power2.out' });
+    const heroTl = gsap.timeline({ delay: 0.4 });
+    heroTl
+      .to('#heroBadge', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' })
+      .to('#heroH1', { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' }, '-=0.4')
+      .to('#heroSub', { opacity: 1, duration: 1, ease: 'power2.out' }, '-=0.4')
+      .to('#heroCta', { opacity: 1, duration: 0.8, ease: 'power2.out' }, '-=0.3')
+      .to('#heroScroll', { opacity: 1, duration: 0.8, ease: 'power2.out' }, '-=0.4');
+
+    gsap.utils.toArray('#manifestoH .line span').forEach((el, i) => gsap.to(el, { scrollTrigger: { trigger: '#manifesto', start: 'top 70%' }, y: 0, duration: 1.2, delay: i * 0.1, ease: 'power3.out' }));
+    gsap.to(['#manifestoP1', '#manifestoP2'], { scrollTrigger: { trigger: '#manifesto', start: 'top 60%' }, opacity: 1, y: 0, duration: 1, stagger: 0.2, ease: 'power2.out' });
+    gsap.to(['#stat1', '#stat2', '#stat3', '#stat4'], { scrollTrigger: { trigger: '#manifesto', start: 'top 50%' }, opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'power2.out' });
+    gsap.to('#assemblyH', { scrollTrigger: { trigger: '#assembly', start: 'top 70%' }, opacity: 1, duration: 1.2, ease: 'power2.out' });
+    gsap.to('#assemblyP', { scrollTrigger: { trigger: '#assembly', start: 'top 65%' }, opacity: 1, duration: 1, delay: 0.3, ease: 'power2.out' });
+    gsap.utils.toArray('#servicesH .line span').forEach((el, i) => gsap.to(el, { scrollTrigger: { trigger: '#services', start: 'top 70%' }, y: 0, duration: 1.1, delay: i * 0.12, ease: 'power3.out' }));
+    gsap.to('#servicesIntro', { scrollTrigger: { trigger: '#services', start: 'top 65%' }, opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' });
+    ['#svc1', '#svc2', '#svc3', '#svc4', '#svc5', '#svc6'].forEach((id, i) => gsap.to(id, { scrollTrigger: { trigger: '.services-grid', start: 'top 75%' }, opacity: 1, y: 0, duration: 0.8, delay: i * 0.08, ease: 'power2.out' }));
+    gsap.utils.toArray('#productH .line span').forEach((el, i) => gsap.to(el, { scrollTrigger: { trigger: '#product', start: 'top 70%' }, y: 0, duration: 1.1, delay: i * 0.12, ease: 'power3.out' }));
+    gsap.to('#dashWrapper', { scrollTrigger: { trigger: '#product', start: 'top 50%' }, opacity: 1, y: 0, duration: 1.2, delay: 0.3, ease: 'power2.out' });
+    gsap.utils.toArray('#philosophyH .line span').forEach((el, i) => gsap.to(el, { scrollTrigger: { trigger: '#philosophy', start: 'top 70%' }, y: 0, duration: 1.1, delay: i * 0.12, ease: 'power3.out' }));
+    gsap.to('#philosophyP', { scrollTrigger: { trigger: '#philosophy', start: 'top 65%' }, opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' });
+    ['#p1', '#p2', '#p3', '#p4'].forEach((id, i) => gsap.to(id, { scrollTrigger: { trigger: '.philosophy-right', start: 'top 75%' }, opacity: 1, y: 0, duration: 0.8, delay: i * 0.1, ease: 'power2.out' }));
+    gsap.utils.toArray('#contactH .line span').forEach((el, i) => gsap.to(el, { scrollTrigger: { trigger: '#contact', start: 'top 70%' }, y: 0, duration: 1.1, delay: i * 0.12, ease: 'power3.out' }));
+    gsap.to('#contactP', { scrollTrigger: { trigger: '#contact', start: 'top 65%' }, opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' });
+    gsap.to('#contactRight', { scrollTrigger: { trigger: '#contact', start: 'top 60%' }, opacity: 1, y: 0, duration: 1, delay: 0.4, ease: 'power2.out' });
+    gsap.utils.toArray('#ctaH .line span').forEach((el, i) => gsap.to(el, { scrollTrigger: { trigger: '#cta', start: 'top 70%' }, y: 0, duration: 1.2, delay: i * 0.15, ease: 'power3.out' }));
+    gsap.to(['#ctaP', '#ctaButtons'], { scrollTrigger: { trigger: '#cta', start: 'top 60%' }, opacity: 1, duration: 1, stagger: 0.2, delay: 0.4, ease: 'power2.out' });
+
+    // HERO THREE.JS
+    (function () {
+      const canvas = document.getElementById('hero-canvas');
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 0);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 0, 5);
+      scene.add(new THREE.AmbientLight(0x111111, 0.5));
+      const dl = new THREE.DirectionalLight(0x00e5ff, 0.8); dl.position.set(2, 3, 2); scene.add(dl);
+      const dl2 = new THREE.DirectionalLight(0xccff00, 0.3); dl2.position.set(-3, -1, 1); scene.add(dl2);
+      const nodes = [], connections = [];
+      const matN = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3, metalness: 0.9 });
+      const matA = new THREE.MeshStandardMaterial({ color: 0x003040, roughness: 0.2, metalness: 1.0, emissive: 0x001a20, emissiveIntensity: 0.4 });
+      const matL = new THREE.LineBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.12 });
+      [[0, 0.5, 0], [-2, 1, -1], [2, -0.5, -1.5], [-1.5, -1, -0.5], [1.5, 1.2, -0.8], [0, -1.5, -1], [-2.5, 0, -2], [2.5, 0.8, -2], [0.8, 0, -2.5]].forEach((pos, i) => {
+        const geo = i % 3 === 0 ? new THREE.OctahedronGeometry(0.12 + Math.random() * 0.08, 0) : i % 3 === 1 ? new THREE.TetrahedronGeometry(0.1 + Math.random() * 0.07, 0) : new THREE.BoxGeometry(0.14, 0.14, 0.14);
+        const mesh = new THREE.Mesh(geo, i < 3 ? matA.clone() : matN.clone());
+        mesh.position.set(...pos);
+        mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+        mesh.userData = { floatSpeed: 0.3 + Math.random() * 0.4, floatAmp: 0.08 + Math.random() * 0.12, rotSpeed: (Math.random() - 0.5) * 0.4, originY: pos[1], phase: Math.random() * Math.PI * 2 };
+        scene.add(mesh); nodes.push(mesh);
+      });
+      [[0, 1], [0, 2], [0, 3], [1, 4], [2, 5], [3, 6], [4, 7], [5, 8]].forEach(([a, b]) => {
+        const geo = new THREE.BufferGeometry().setFromPoints([nodes[a].position.clone(), nodes[b].position.clone()]);
+        const line = new THREE.Line(geo, matL); scene.add(line); connections.push({ line, a, b });
+      });
+      const grid = new THREE.GridHelper(20, 40, 0x111111, 0x0a0a0a); grid.position.y = -2.5; grid.material.transparent = true; grid.material.opacity = 0.4; scene.add(grid);
+      let tRX = 0, tRY = 0, cRX = 0, cRY = 0;
+      document.addEventListener('mousemove', e => { tRY = (e.clientX / window.innerWidth - 0.5) * 0.3; tRX = (e.clientY / window.innerHeight - 0.5) * 0.15; });
+      const clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+        cRY += (tRY - cRY) * 0.03; cRX += (tRX - cRX) * 0.03;
+        nodes.forEach(n => { const d = n.userData; n.position.y = d.originY + Math.sin(t * d.floatSpeed + d.phase) * d.floatAmp; n.rotation.y += d.rotSpeed * 0.008; n.rotation.x += d.rotSpeed * 0.005; });
+        connections.forEach(({ line, a, b }) => { line.geometry.setFromPoints([nodes[a].position.clone(), nodes[b].position.clone()]); line.geometry.computeBoundingSphere(); });
+        scene.rotation.y = cRY; scene.rotation.x = cRX;
+        renderer.render(scene, camera);
+      }
+      animate();
+      window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+    })();
+
+    // ASSEMBLY THREE.JS
+    (function () {
+      const canvas = document.getElementById('assembly-canvas');
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(canvas.parentElement.offsetWidth, canvas.parentElement.offsetHeight);
+      renderer.setClearColor(0x000000, 0);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(50, canvas.parentElement.offsetWidth / canvas.parentElement.offsetHeight, 0.1, 100);
+      camera.position.set(0, 2, 8); camera.lookAt(0, 0, 0);
+      scene.add(new THREE.AmbientLight(0x0a0a0a, 2));
+      const pl = new THREE.PointLight(0x00e5ff, 2, 12); pl.position.set(2, 4, 4); scene.add(pl);
+      const pl2 = new THREE.PointLight(0xccff00, 1.5, 8); pl2.position.set(-3, -2, 2); scene.add(pl2);
+      const parts = [];
+      const core = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.1, 1.2), new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.2, metalness: 0.9, emissive: 0x001015, emissiveIntensity: 0.5 }));
+      scene.add(core);
+      const proc = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.12, 0.5), new THREE.MeshStandardMaterial({ color: 0x00e5ff, roughness: 0.1, metalness: 0.8, emissive: 0x00e5ff, emissiveIntensity: 0.6 }));
+      core.add(proc);
+      const pGeos = [new THREE.BoxGeometry(1.2, 0.05, 0.2), new THREE.BoxGeometry(0.4, 0.4, 0.4), new THREE.CylinderGeometry(0.1, 0.1, 0.8, 8), new THREE.BoxGeometry(0.6, 0.15, 0.6), new THREE.TorusGeometry(0.3, 0.05, 8, 24)];
+      for (let i = 0; i < 18; i++) {
+        const isA = i % 4 === 0;
+        const mesh = new THREE.Mesh(pGeos[i % pGeos.length], new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.3, metalness: 0.9, emissive: isA ? 0xccff00 : 0x000000, emissiveIntensity: isA ? 0.3 : 0 }));
+        const aPos = new THREE.Vector3((Math.random() - 0.5) * 2.5, (Math.random() - 0.5) * 1.5 + 0.5, (Math.random() - 0.5) * 2.5);
+        if (i % pGeos.length === 0) aPos.set((Math.random() > 0.5 ? 1 : -1) * 0.8, 0.2, (Math.random() - 0.5) * 1.0);
+        const ePos = aPos.clone().normalize().multiplyScalar(4 + Math.random() * 3);
+        mesh.position.copy(ePos);
+        mesh.userData = { assembledPos: aPos, explodedPos: ePos, rotSpeed: new THREE.Vector3((Math.random() - 0.5) * 0.05, (Math.random() - 0.5) * 0.05, (Math.random() - 0.5) * 0.05), assembledRot: new THREE.Euler((Math.PI / 2) * Math.floor(Math.random() * 4), (Math.PI / 2) * Math.floor(Math.random() * 4), 0) };
+        scene.add(mesh); parts.push(mesh);
+      }
+      const lMat = new THREE.LineBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.15 });
+      const lines = [];
+      for (let i = 0; i < 8; i++) { const geo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]); const line = new THREE.Line(geo, lMat); scene.add(line); lines.push({ line, p1: parts[i], p2: parts[i + 1] }); }
+      const clock2 = new THREE.Clock();
+      let mx2 = 0, my2 = 0;
+      document.addEventListener('mousemove', e => { mx2 = (e.clientX / window.innerWidth - 0.5); my2 = (e.clientY / window.innerHeight - 0.5); });
+      function animateA() {
+        requestAnimationFrame(animateA);
+        const t = clock2.getElapsedTime();
+        const cycle = (t * 0.4) % (Math.PI * 2);
+        let rp = (Math.sin(cycle) + 1) / 2;
+        let progress = rp < 0.5 ? 4 * rp * rp * rp : 1 - Math.pow(-2 * rp + 2, 3) / 2;
+        progress = Math.max(0, Math.min(1, (progress - 0.1) * 1.25));
+        core.rotation.y = t * 0.2; core.rotation.x = Math.sin(t * 0.5) * 0.1; proc.rotation.y = -t * 0.5;
+        parts.forEach(p => {
+          p.position.lerpVectors(p.userData.explodedPos, p.userData.assembledPos, progress);
+          if (progress > 0.95) { p.rotation.x = THREE.MathUtils.lerp(p.rotation.x, p.userData.assembledRot.x, 0.1); p.rotation.y = THREE.MathUtils.lerp(p.rotation.y, p.userData.assembledRot.y, 0.1); p.rotation.z = THREE.MathUtils.lerp(p.rotation.z, p.userData.assembledRot.z, 0.1); }
+          else { p.rotation.x += p.userData.rotSpeed.x; p.rotation.y += p.userData.rotSpeed.y; p.rotation.z += p.userData.rotSpeed.z; }
+        });
+        lines.forEach(({ line, p1, p2 }) => { line.geometry.setFromPoints([p1.position, p2.position]); line.material.opacity = progress > 0.8 ? 0.3 : 0; });
+        scene.rotation.y += (mx2 * 0.5 - scene.rotation.y) * 0.05;
+        scene.rotation.x += (-my2 * 0.2 - scene.rotation.x) * 0.05;
+        renderer.render(scene, camera);
+      }
+      animateA();
+      const section = document.getElementById('assembly');
+      new ResizeObserver(() => { const w = section.offsetWidth, h = section.offsetHeight; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h); }).observe(section);
+    })();
+
+    // TABS & SIDEBAR
+    document.querySelectorAll('.chart-period-tabs button').forEach(btn => { btn.addEventListener('click', function () { document.querySelectorAll('.chart-period-tabs button').forEach(b => b.classList.remove('active')); this.classList.add('active'); }); });
+    document.querySelectorAll('.dash-nav-item').forEach(item => { item.addEventListener('click', function () { document.querySelectorAll('.dash-nav-item').forEach(i => i.classList.remove('active')); this.classList.add('active'); }); });
+  </script>
+</body>
+
+</html>
