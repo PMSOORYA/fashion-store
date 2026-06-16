@@ -3075,6 +3075,28 @@
       .nav-cta-btn {
         display: none;
       }
+
+      /* Hero arrow buttons — reposition above bottom nav */
+      .hero-nav-arrows {
+        position: absolute;
+        right: 24px;
+        bottom: 105px;
+        display: flex;
+        gap: 12px;
+        z-index: 40;
+      }
+
+      .hero-arrow-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        padding: 0;
+        justify-content: center;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.20);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+      }
     }
 
     /* ── iPhone Pro Max / Large Phones (≤480px) ── */
@@ -3129,10 +3151,27 @@
         font-size: 12px;
         padding: 7px 12px;
       }
+
+      /* Hero arrows — smaller and repositioned */
+      .hero-nav-arrows {
+        right: 22px;
+        bottom: 100px;
+        gap: 10px;
+      }
+
+      .hero-arrow-btn {
+        width: 44px;
+        height: 44px;
+      }
     }
 
     /* ── iPhone SE / Small Phones (≤390px) ── */
     @media(max-width: 390px) {
+      /* Hide hero arrows on very small screens */
+      .hero-nav-arrows {
+        display: none;
+      }
+
       .hero-title {
         font-size: clamp(1.9rem, 9vw, 2.6rem);
         line-height: 1.02;
