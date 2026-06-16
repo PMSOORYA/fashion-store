@@ -1909,8 +1909,11 @@
 
     @media(min-width:900px) {
       .proc-steps {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 16px
+      }
+      .proc-connector {
+        display: none;
       }
     }
 
@@ -3680,7 +3683,7 @@
 
       <!-- Right: Body + Credibility -->
       <div class="pov-right">
-        <p class="pov-body reveal reveal-delay-2">ZYNEXS builds premium websites, AI automation systems, landing pages, and brand presence that make the first impression work in your favor.</p>
+        <p class="pov-body reveal reveal-delay-2">Zynexs Intelligence builds premium websites, AI automation systems, landing pages, and brand presence that make the first impression work in your favor.</p>
         <div class="pov-creds" role="list" aria-label="Our core values">
           <div class="pov-cred reveal reveal-delay-3" role="listitem">
             <span class="pov-cred-icon" aria-hidden="true">
@@ -3711,7 +3714,7 @@
     <div class="word-reveal-sticky">
       <div class="word-reveal-inner">
         <span class="word-reveal-label" id="wrLabel">Our Promise</span>
-        <p class="word-reveal-text" id="wrText" aria-label="Before a customer calls, books, or buys — they judge your business online. ZYNEXS builds premium websites and AI automation systems that make every first impression count."></p>
+        <p class="word-reveal-text" id="wrText" aria-label="Before a customer calls, books, or buys — they judge your business online. Zynexs builds premium websites and AI automation systems that make every first impression count."></p>
       </div>
     </div>
   </div>
@@ -4134,9 +4137,9 @@
             </div>
             <div class="channel-arrow">→</div>
           </a>
-          <div class="copy-msg-container" onclick="copyContactMessage(this, 'Hi ZYNEXS, I’m interested in your website and automation services. Can you show me the details?')">
+          <div class="copy-msg-container" onclick="copyContactMessage(this, 'Hi Zynexs, I’m interested in your website and automation services. Can you show me the details?')">
             <span class="copy-label">Copy DM message:</span>
-            <span class="copy-text">"Hi ZYNEXS, I’m interested in your website..."</span>
+            <span class="copy-text">"Hi Zynexs, I’m interested in your website..."</span>
             <span class="copy-status">Copy</span>
           </div>
         </div>
@@ -4154,9 +4157,9 @@
             </div>
             <div class="channel-arrow">→</div>
           </a>
-          <div class="copy-msg-container" onclick="copyContactMessage(this, 'Hi ZYNEXS, I’m interested in your website and automation services. Can you show me the details?')">
+          <div class="copy-msg-container" onclick="copyContactMessage(this, 'Hi Zynexs, I’m interested in your website and automation services. Can you show me the details?')">
             <span class="copy-label">Copy DM message:</span>
-            <span class="copy-text">"Hi ZYNEXS, I’m interested in your website..."</span>
+            <span class="copy-text">"Hi Zynexs, I’m interested in your website..."</span>
             <span class="copy-status">Copy</span>
           </div>
         </div>
@@ -4387,7 +4390,7 @@
         var textEl  = document.getElementById('wrText');
         if (!section || !textEl) return;
 
-        var TEXT = "Before a customer calls, books, or buys — they judge your business online. ZYNEXS builds premium websites and AI automation systems that make every first impression count.";
+        var TEXT = "Before a customer calls, books, or buys — they judge your business online. Zynexs builds premium websites and AI automation systems that make every first impression count.";
         var words = TEXT.split(' ');
 
         // Build DOM: ghost + live span per word
@@ -4410,24 +4413,37 @@
         }, { threshold: 0.1 });
         labelObs.observe(section);
 
-        // Scroll-driven word opacity
-        function onScroll() {
+        // Scroll-driven word opacity — uses RAF for Lenis compatibility
+        var ticking = false;
+        function updateWords() {
           var rect      = section.getBoundingClientRect();
-          var scrolled  = -rect.top;                      // px scrolled into section
-          var available = rect.height - window.innerHeight; // total scroll travel
+          var scrolled  = -rect.top;
+          var available = rect.height - window.innerHeight;
           var progress  = Math.max(0, Math.min(1, scrolled / available));
 
           for (var i = 0; i < total; i++) {
-            var wordStart  = i / total;
-            var wordEnd    = (i + 1) / total;
+            var wordStart    = i / total;
+            var wordEnd      = (i + 1) / total;
             var wordProgress = (progress - wordStart) / (wordEnd - wordStart);
-            var opacity    = Math.max(0, Math.min(1, wordProgress * 4)); // fast per-word fade
+            var opacity      = Math.max(0, Math.min(1, wordProgress * 4));
             liveSpans[i].style.opacity = opacity;
+          }
+          ticking = false;
+        }
+
+        function onScroll() {
+          if (!ticking) {
+            requestAnimationFrame(updateWords);
+            ticking = true;
           }
         }
 
         window.addEventListener('scroll', onScroll, { passive: true });
-        onScroll(); // run once in case already in view
+        // Also listen to Lenis scroll event for smooth-scroll compatibility
+        if (typeof lenis !== 'undefined' && lenis) {
+          lenis.on('scroll', onScroll);
+        }
+        onScroll();
       }
 
       function initAssetFallbacks() {
@@ -4497,7 +4513,7 @@
       };
 
       // Set predefined messages across all buttons dynamically on load
-      const globalMessage = "Hi ZYNEXS, I’m interested in your website and automation services. Can you show me the details?";
+      const globalMessage = "Hi Zynexs, I am interested in your website and automation services. Can you show me the details?";
       
       // WhatsApp general contact buttons
       document.querySelectorAll('.cta-btn-whatsapp, [data-channel="whatsapp"], #heroWhatsAppCTA, .nav-cta-btn, .mobile-cta-btn').forEach(el => {
@@ -4508,7 +4524,7 @@
       document.querySelectorAll('.cta-btn-email, [data-channel="email"]').forEach(el => {
         el.href = createEmailLink(
           "Website & Automation Enquiry",
-          "Hi ZYNEXS,\n\nI’m interested in your website and automation services. Can you show me the details?"
+          "Hi Zynexs,\n\nI am interested in your website and automation services. Can you show me the details?"
         );
       });
 
@@ -4516,7 +4532,7 @@
       document.querySelectorAll('.price-cta-btn').forEach(el => {
         const pkgName = el.getAttribute('data-pkg-name');
         if (pkgName) {
-          el.href = createWhatsAppLink(`Hi ZYNEXS, I’m interested in the ${pkgName} package. Can you send me the details?`);
+          el.href = createWhatsAppLink(`Hi Zynexs, I am interested in the ${pkgName} package. Can you send me the details?`);
         }
       });
 
@@ -4524,7 +4540,7 @@
       document.querySelectorAll('.demo-link').forEach(el => {
         const demoName = el.getAttribute('data-demo-name');
         if (demoName) {
-          el.href = createWhatsAppLink(`Hi ZYNEXS, I want to see the ${demoName} website demo.`);
+          el.href = createWhatsAppLink(`Hi Zynexs, I want to see the ${demoName} website demo.`);
         }
       });
 
