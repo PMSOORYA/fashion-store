@@ -2150,6 +2150,13 @@
       #trust-strip {
         padding: 0
       }
+
+      /* Mobile: disable hero video zoom animation */
+      #hero.cinematic-hero .hero-bg-video {
+        transform: scale(1);
+        animation: none;
+        opacity: 1;
+      }
     }
 
     @media(prefers-reduced-motion:reduce) {
