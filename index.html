@@ -3245,22 +3245,48 @@
       transform: translateY(-2px) !important;
     }
 
-    /* Automation slow flow */
+    /* Automated slow flow */
     .pulse-dot {
       animation-duration: 3.5s !important;
+    }
+
+    /* ═══ DEFENSIVE UI CLEANUP ═══ */
+    .hero-nav-arrows, .hero-arrow-btn, .slider-arrows, .hero-navigation,
+    .hero-slider-buttons, .carousel-arrows, .hero-arrow, .slider-arrow,
+    .arrow-btn, .prev-btn, .next-btn, .hero-prev, .hero-next,
+    .video-play, .play-button, .play-icon, .hero-play, .hero-video-play,
+    .video-overlay-button, .play-overlay, .video-control, .hero-media-control,
+    .video-controls {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
     }
 
     /* ═══════════════════════════════════════
        MOBILE RESPONSIVENESS FIXES
        ═══════════════════════════════════════ */
 
+    /* Mobile margin system */
+    :root {
+      --mobile-x: 22px;
+      --mobile-bottom-safe: calc(20px + env(safe-area-inset-bottom, 0px));
+    }
+    @media(max-width: 390px) {
+      :root { --mobile-x: 20px; }
+    }
+
     /* Global overflow protection */
-    html {
+    html, body {
       width: 100%;
+      max-width: 100%;
       overflow-x: hidden;
     }
 
-    /* Hero section base — use svh for mobile-safe height */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    img, video, canvas { max-width: 100%; display: block; }
+
+    /* Hero section base */
     #hero.cinematic-hero {
       min-height: 100svh;
       overflow: hidden;
@@ -3276,84 +3302,140 @@
 
     /* ── TABLET (≤768px) ── */
     @media(max-width: 768px) {
-      /* Hero content padding */
+      #hero.cinematic-hero {
+        min-height: 100svh;
+        overflow: hidden;
+        padding-bottom: 150px;
+      }
+
       .hero-content-area {
-        padding: 130px 22px 150px;
+        width: 100%;
+        max-width: 100%;
+        padding: 130px var(--mobile-x) 170px;
+        text-align: left;
+        position: relative;
+        z-index: 5;
         justify-content: flex-start;
       }
 
-      /* Hero bottom padding so nav doesn't overlap */
-      #hero.cinematic-hero {
-        padding-bottom: 120px;
-      }
-
-      /* Title sizing */
-      .hero-title {
-        font-size: clamp(2.6rem, 11vw, 4.3rem);
-        line-height: 0.95;
-        max-width: 100%;
-        letter-spacing: -0.05em;
-      }
-
-      /* Description */
-      .hero-desc {
-        font-size: 1.05rem;
-        line-height: 1.55;
-        max-width: 95%;
-        margin-top: 22px;
-      }
-
-      /* Badges — wrap naturally */
+      /* Badges */
       .hero-meta-row {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
+        margin-bottom: 26px;
+        justify-content: flex-start;
+        align-items: center;
         max-width: 100%;
       }
 
       .hero-meta-row .meta-item {
-        font-size: 14px;
-        padding: 9px 14px;
+        min-height: 40px;
+        padding: 9px 13px;
+        font-size: 13.5px;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
         white-space: nowrap;
       }
 
-      /* Bottom floating nav — smaller, avoid overlap */
+      /* Title */
+      .hero-title {
+        width: 100%;
+        max-width: 100%;
+        font-size: clamp(2.35rem, 10vw, 3.8rem);
+        line-height: 1;
+        letter-spacing: -0.045em;
+        margin: 0;
+        overflow-wrap: break-word;
+      }
+
+      /* Description */
+      .hero-desc {
+        max-width: 100%;
+        font-size: 1rem;
+        line-height: 1.52;
+        margin-top: 22px;
+        margin-bottom: 0;
+      }
+
+      /* CTA buttons */
+      .hero-cta-buttons {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+        margin-top: 30px;
+        margin-bottom: 50px;
+      }
+
+      .hero-cta-buttons a,
+      .hero-cta-buttons button {
+        width: 100%;
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+      }
+
+      .hero-cta-watch,
+      .hero-cta-learn {
+        padding: 14px 24px;
+        font-size: 14px;
+      }
+
+      /* Bottom floating nav */
       .tubelight-nav {
-        width: calc(100% - 36px);
-        left: 18px;
-        right: 18px;
-        bottom: 18px;
+        position: fixed;
+        left: var(--mobile-x);
+        right: var(--mobile-x);
+        bottom: var(--mobile-bottom-safe);
+        width: auto;
+        max-width: calc(100% - (var(--mobile-x) * 2));
         transform: none;
-        z-index: 50;
+        z-index: 80;
       }
 
       .tubelight-nav-inner {
-        padding: 8px;
+        height: 62px;
+        padding: 6px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
       .tubelight-item {
-        width: 48px;
-        height: 48px;
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
         padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
-      /* Background video — crop from center-top */
-      .hero-bg-video {
-        object-position: center top;
+      .tubelight-item svg {
+        width: 21px;
+        height: 21px;
       }
 
-      /* Hamburger button */
+      /* Background video */
+      .hero-bg-video { object-position: center top; }
+
+      /* Hamburger menu button */
       .nav-hamburger {
+        position: fixed;
         top: 28px;
-        right: 22px;
-        width: 56px;
-        height: 56px;
+        right: var(--mobile-x);
+        width: 54px;
+        height: 54px;
+        z-index: 90;
       }
 
-      /* Hide desktop-only CTA in nav */
-      .nav-cta-btn {
-        display: none;
-      }
+      /* Hide desktop CTA in navbar */
+      .nav-cta-btn { display: none !important; }
     }
 
     /* ── iPhone Pro Max / Large Phones (≤480px) ── */
@@ -3363,85 +3445,32 @@
         line-height: 1;
         letter-spacing: -0.04em;
       }
-
-      .hero-desc {
-        font-size: 0.95rem;
-        max-width: 100%;
-      }
-
-      /* CTA buttons — stack vertically */
-      .hero-cta-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        width: 100%;
-      }
-
-      .hero-cta-buttons a,
-      .hero-cta-buttons button {
-        width: 100%;
-        justify-content: center;
-      }
-
-      /* CTA button sizing */
-      .hero-cta-watch,
-      .hero-cta-learn {
-        padding: 12px 20px;
-        font-size: 13px;
-      }
-
-      /* Hero content tighter */
-      .hero-content-area {
-        padding: 120px 18px 140px;
-      }
+      .hero-desc { font-size: 0.95rem; max-width: 100%; }
+      .hero-content-area { padding: 120px var(--mobile-x) 160px; }
     }
 
     /* ── iPhone 14/15 / Medium Phones (≤430px) ── */
     @media(max-width: 430px) {
+      .hero-content-area { padding-top: 125px; padding-bottom: 175px; }
       .hero-title {
         font-size: clamp(2.2rem, 10vw, 3rem);
         line-height: 1;
         letter-spacing: -0.04em;
       }
-
-      .hero-meta-row .meta-item {
-        font-size: 12px;
-        padding: 7px 12px;
-      }
+      .hero-meta-row .meta-item { font-size: 12px; padding: 7px 12px; }
     }
 
     /* ── iPhone SE / Small Phones (≤390px) ── */
     @media(max-width: 390px) {
-      .hero-title {
-        font-size: clamp(1.9rem, 9vw, 2.6rem);
-        line-height: 1.02;
-      }
+      .hero-title { font-size: clamp(2.15rem, 9.5vw, 3.2rem); }
+      .hero-desc { font-size: 0.88rem; }
+      .hero-content-area { padding: 110px var(--mobile-x) 150px; }
 
-      .hero-desc {
-        font-size: 0.88rem;
-      }
-
-      .hero-content-area {
-        padding: 110px 16px 130px;
-      }
-
-      .tubelight-nav {
-        width: calc(100% - 24px);
-        left: 12px;
-        right: 12px;
-        bottom: 12px;
-      }
-
-      .tubelight-item {
-        width: 42px;
-        height: 42px;
-      }
+      .tubelight-nav-inner { height: 58px; padding: 6px 9px; }
+      .tubelight-item { width: 40px; height: 40px; }
 
       .hero-cta-watch,
-      .hero-cta-learn {
-        padding: 11px 16px;
-        font-size: 12px;
-      }
+      .hero-cta-learn { padding: 11px 16px; font-size: 12px; }
     }
   </style>
 </head>
