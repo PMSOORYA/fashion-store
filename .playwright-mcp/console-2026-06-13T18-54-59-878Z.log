@@ -1,0 +1,5 @@
+[   13552ms] [ERROR] Mixed Content: The page at 'https://www.zynexs.com/' was loaded over HTTPS, but requested an insecure frame 'http://www.zynexs.com/'. This request has been blocked; the content must be served over HTTPS. @ https://www.zynexs.com/:8
+[   13744ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://www.zynexs.com/favicon.ico:0
+[   45340ms] [ERROR] Mixed Content: The page at 'https://www.zynexs.com/' was loaded over HTTPS, but requested an insecure frame 'http://www.zynexs.com/'. This request has been blocked; the content must be served over HTTPS. @ https://www.zynexs.com/:8
+[   50614ms] [ERROR] Mixed Content: The page at 'https://www.zynexs.com/' was loaded over HTTPS, but requested an insecure frame 'http://www.zynexs.com/'. This request has been blocked; the content must be served over HTTPS. @ https://www.zynexs.com/:8
+[   59845ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://www.zynexs.com/favicon.ico:0
