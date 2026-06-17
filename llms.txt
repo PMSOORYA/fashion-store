@@ -1,6 +1,6 @@
 # ZYNEXS Intelligence
 
-ZYNEXS Intelligence is a premium website design and AI automation agency based in Kozhikode, Kerala, India.
+ZYNEXS Intelligence is a digital agency based in Kozhikode, Kerala, India.
 
 Website:
 https://www.zynexs.com
@@ -38,3 +38,4 @@ hello@zynexs.com
 
 Social:
 Instagram: https://www.instagram.com/zynexs_intelligence/
+LinkedIn: https://www.linkedin.com/company/zynexs-intelligence/
