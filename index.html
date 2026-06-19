@@ -4180,6 +4180,94 @@
       }
     }
 
+    /* Mobile Hero Overlay, Readability, and Layering Fixes */
+    @media (max-width: 767px) {
+      #hero.cinematic-hero {
+        position: relative !important;
+        isolation: isolate !important;
+      }
+
+      #hero.cinematic-hero .hero-bg-video,
+      #hero.cinematic-hero .hero-video,
+      #hero.cinematic-hero video {
+        z-index: 0 !important;
+      }
+
+      #hero.cinematic-hero::before,
+      #hero.cinematic-hero::after,
+      .hero-overlay,
+      .hero-glass-overlay,
+      .cinematic-overlay {
+        z-index: 1 !important;
+        pointer-events: none !important;
+      }
+
+      #hero.cinematic-hero .hero-content-area,
+      #hero.cinematic-hero .hero-meta-row,
+      #hero.cinematic-hero .hero-headline,
+      #hero.cinematic-hero .hero-title,
+      #hero.cinematic-hero .hero-desc,
+      #hero.cinematic-hero .hero-cta-buttons,
+      #hero.cinematic-hero .hero-trust-line {
+        position: relative !important;
+        z-index: 5 !important;
+      }
+
+      #hero.cinematic-hero .hero-headline,
+      #hero.cinematic-hero .hero-title,
+      #hero.cinematic-hero h1 {
+        filter: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        mix-blend-mode: normal !important;
+        opacity: 1 !important;
+        color: #0a1b33 !important;
+        text-shadow: none !important;
+      }
+
+      #hero.cinematic-hero .hero-bg-video {
+        object-position: 82% center !important;
+      }
+
+      /* Uniform vertical gradient on mobile to prevent horizontal cut-off white glare */
+      .hero-video-overlay {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.65) 0%,
+          rgba(255, 255, 255, 0.35) 60%,
+          rgba(255, 255, 255, 0.1) 100%
+        ) !important;
+      }
+
+      /* Non-blurry mobile entrance animation fallback to solve subpixel GPU rendering blur */
+      .animate-blur-fade-up {
+        filter: none !important;
+        animation: fadeUpMobile 0.8s ease-out forwards !important;
+      }
+
+      #hero.cinematic-hero .hero-content-area::before {
+        content: "";
+        position: absolute;
+        inset: -18px -10px auto -10px;
+        height: 46%;
+        z-index: -1;
+        border-radius: 28px;
+        background: linear-gradient(
+          180deg,
+          rgba(255,255,255,0.34),
+          rgba(255,255,255,0.08),
+          transparent
+        );
+        filter: blur(18px);
+        pointer-events: none;
+      }
+    }
+
+    @keyframes fadeUpMobile {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
   </style>
 </head>
 
