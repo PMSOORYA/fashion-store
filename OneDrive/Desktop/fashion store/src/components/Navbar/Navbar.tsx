@@ -92,9 +92,8 @@ export const Navbar: React.FC = () => {
             </button>
 
             {/* Cart Icon */}
-            <button
-              type="button"
-              onClick={() => setIsCartOpen(true)}
+            <Link
+              to="/cart"
               className="p-1 hover:opacity-60 transition-opacity relative cursor-pointer flex items-center gap-1.5"
               aria-label="View Shopping Cart"
             >
@@ -108,7 +107,7 @@ export const Navbar: React.FC = () => {
                   {totalCount}
                 </span>
               )}
-            </button>
+            </Link>
 
             {/* Profile Icon */}
             <button

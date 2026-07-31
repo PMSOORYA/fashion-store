@@ -38,19 +38,19 @@ export const Cart: React.FC = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="pt-32 pb-24 max-w-4xl mx-auto px-6 text-center">
-        <div className="w-20 h-20 bg-[#F8F8F8] rounded-full flex items-center justify-center mx-auto mb-6 text-[#111111]">
-          <ShoppingBag className="w-8 h-8" />
+      <div className="pt-36 pb-28 max-w-xl mx-auto px-6 text-center">
+        <div className="w-20 h-20 bg-[#F9F8F6] rounded-full flex items-center justify-center mx-auto mb-6 text-[#000000] border border-[#EAEAEA]">
+          <ShoppingBag className="w-8 h-8 stroke-[1.5]" />
         </div>
-        <h1 className="font-serif text-3xl md:text-4xl text-[#111111] mb-4">
-          Your Bag is Empty
+        <h1 className="font-serif text-3xl md:text-4xl text-[#000000] mb-3 font-normal">
+          Your cart is empty.
         </h1>
-        <p className="text-sm text-[#666666] font-sans max-w-md mx-auto mb-8 font-light">
+        <p className="text-xs font-sans text-[#666666] max-w-md mx-auto mb-8 font-light leading-relaxed">
           Your shopping bag currently holds no items. Discover our luxury collection of ten handcrafted dresses.
         </p>
         <Link to="/">
-          <Button size="lg" icon={<ArrowRight className="w-4 h-4" />}>
-            Explore Collection
+          <Button size="lg">
+            Continue Shopping
           </Button>
         </Link>
       </div>
