@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Lock, Mail, Sparkles } from 'lucide-react';
 import { LOGIN_IMAGE } from '../../data/products';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components/Button/Button';
@@ -12,7 +11,6 @@ export const Login: React.FC = () => {
 
   const [email, setEmail] = useState('patron@leonie-luxe.com');
   const [password, setPassword] = useState('••••••••••••');
-  const [rememberMe, setRememberMe] = useState(true);
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,126 +25,106 @@ export const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row bg-[#FFFFFF]">
-      {/* Left Column - Editorial Hero Image & Overlay */}
-      <div className="relative w-full md:w-1/2 min-h-[40vh] md:min-h-screen bg-[#111111] overflow-hidden flex flex-col justify-between p-8 md:p-16 text-[#FFFFFF]">
-        {/* Editorial Background Image */}
+      {/* Left Column - High Fashion Editorial Campaign Photo */}
+      <div className="relative w-full md:w-1/2 min-h-[50vh] md:min-h-screen bg-[#000000] overflow-hidden flex flex-col justify-between p-8 md:p-16 text-[#FFFFFF]">
         <img
           src={LOGIN_IMAGE}
-          alt="Editorial Fashion Model"
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-70 scale-105 transition-transform duration-1000"
+          alt="Editorial Fashion Campaign"
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-80"
         />
-        {/* Dark Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
 
         {/* Top Logo */}
         <div className="relative z-10">
-          <span className="font-serif text-3xl md:text-4xl tracking-[0.25em] font-bold text-[#EADBC8]">
+          <span className="font-serif text-2xl md:text-3xl tracking-[0.3em] font-bold text-[#FFFFFF]">
             LÉONIE
           </span>
-          <span className="block text-[10px] font-sans tracking-[0.4em] uppercase text-[#CCCCCC] mt-0.5">
-            HAUTE COUTURE & LUXURY BOUTIQUE
+          <span className="block text-[9px] font-sans tracking-[0.4em] uppercase text-[#CCCCCC] mt-0.5">
+            HAUTE COUTURE • PARIS
           </span>
         </div>
 
-        {/* Bottom Campaign Text */}
+        {/* Campaign Editorial Title */}
         <div className="relative z-10 max-w-md my-auto md:my-0">
-          <div className="inline-flex items-center gap-2 text-[#EADBC8] text-xs font-sans uppercase tracking-[0.2em] mb-4">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Autumn / Winter Collection</span>
-          </div>
-          <h1 className="font-serif text-3xl md:text-5xl font-normal leading-tight mb-4 text-[#FFFFFF]">
+          <span className="text-[10px] font-sans uppercase tracking-[0.3em] text-[#EADBC8] block mb-3">
+            Collection 2026
+          </span>
+          <h1 className="font-serif text-3xl md:text-5xl font-normal leading-[1.15] mb-4 text-[#FFFFFF]">
             Elegance is not standing out, but being remembered.
           </h1>
-          <p className="text-sm font-sans text-[#DDDDDD] leading-relaxed font-light">
-            Welcome to the private sanctuary of fine dressmaking. Explore ten exquisite creations hand-crafted for life's most memorable moments.
+          <p className="text-xs font-sans text-[#DDDDDD] font-light leading-relaxed">
+            Ten masterfully draped creations crafted from pure Grade 6A Mulberry silk and Italian velvet.
           </p>
         </div>
 
-        {/* Footer Credit */}
-        <div className="relative z-10 hidden md:block text-[11px] font-sans text-[#999999] tracking-wider uppercase">
-          © {new Date().getFullYear()} LÉONIE LUXE ATELIER
+        <div className="relative z-10 hidden md:block text-[10px] font-sans text-[#999999] tracking-[0.25em] uppercase">
+          © {new Date().getFullYear()} LÉONIE PARIS
         </div>
       </div>
 
-      {/* Right Column - Minimalist Login Form */}
+      {/* Right Column - Understated Minimalist Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-20 bg-[#FFFFFF]">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-md"
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-sm"
         >
-          {/* Header */}
-          <div className="mb-10 text-center md:text-left">
-            <span className="text-xs uppercase font-sans tracking-[0.25em] text-[#777777] font-medium block mb-2">
-              Exclusive Access
+          <div className="mb-10 text-left">
+            <span className="text-[10px] uppercase font-sans tracking-[0.3em] text-[#888888] font-medium block mb-2">
+              Private Access
             </span>
-            <h2 className="font-serif text-3xl md:text-4xl text-[#111111] font-normal mb-3">
-              Client Sign In
+            <h2 className="font-serif text-3xl text-[#000000] font-normal mb-2">
+              Sign In
             </h2>
-            <p className="text-xs text-[#666666] font-sans">
-              Enter your credentials or enter immediately as a distinguished guest.
+            <p className="text-xs text-[#666666] font-sans font-light">
+              Enter your client credentials or continue as guest.
             </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleLoginSubmit} className="space-y-6">
             <div>
-              <label className="block text-xs uppercase tracking-widest font-sans font-medium text-[#111111] mb-2">
+              <label className="block text-[10px] uppercase tracking-[0.25em] font-sans font-medium text-[#000000] mb-2">
                 Email Address
               </label>
-              <div className="relative">
-                <Mail className="w-4 h-4 text-[#999999] absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full pl-10 pr-4 py-3.5 bg-[#F8F8F8] border border-[#E5E5E5] text-sm font-sans text-[#111111] focus:bg-[#FFFFFF] focus:border-[#111111] focus:outline-none transition-colors"
-                  placeholder="patron@leonie-luxe.com"
-                />
-              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3.5 bg-[#F9F8F6] border border-[#EAEAEA] text-xs font-sans text-[#000000] focus:bg-[#FFFFFF] focus:border-[#000000] focus:outline-none transition-colors"
+                placeholder="client@leonie-luxe.com"
+              />
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-widest font-sans font-medium text-[#111111] mb-2">
+              <label className="block text-[10px] uppercase tracking-[0.25em] font-sans font-medium text-[#000000] mb-2">
                 Password
               </label>
-              <div className="relative">
-                <Lock className="w-4 h-4 text-[#999999] absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full pl-10 pr-4 py-3.5 bg-[#F8F8F8] border border-[#E5E5E5] text-sm font-sans text-[#111111] focus:bg-[#FFFFFF] focus:border-[#111111] focus:outline-none transition-colors"
-                  placeholder="••••••••••••"
-                />
-              </div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-3.5 bg-[#F9F8F6] border border-[#EAEAEA] text-xs font-sans text-[#000000] focus:bg-[#FFFFFF] focus:border-[#000000] focus:outline-none transition-colors"
+                placeholder="••••••••••••"
+              />
             </div>
 
-            {/* Remember & Forgot */}
-            <div className="flex items-center justify-between text-xs font-sans">
-              <label className="flex items-center gap-2 cursor-pointer text-[#555555]">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="accent-[#111111] w-4 h-4"
-                />
+            <div className="flex items-center justify-between text-[11px] font-sans">
+              <label className="flex items-center gap-2 cursor-pointer text-[#666666]">
+                <input type="checkbox" defaultChecked className="accent-[#000000] w-3.5 h-3.5" />
                 <span>Remember me</span>
               </label>
-              <button type="button" className="text-[#111111] underline hover:opacity-70">
+              <button type="button" className="text-[#000000] underline hover:opacity-50">
                 Forgot Password?
               </button>
             </div>
 
-            {/* Action Buttons */}
             <div className="space-y-3 pt-4">
-              <Button fullWidth type="submit" size="lg" icon={<ArrowRight className="w-4 h-4" />}>
-                Enter Boutique
+              <Button fullWidth type="submit" size="lg">
+                Enter Storefront
               </Button>
-
               <Button
                 fullWidth
                 type="button"
@@ -158,9 +136,8 @@ export const Login: React.FC = () => {
               </Button>
             </div>
 
-            {/* Demo Notice */}
-            <div className="pt-6 text-center border-t border-[#E5E5E5]">
-              <p className="text-[11px] font-sans uppercase tracking-widest text-[#888888]">
+            <div className="pt-8 text-center border-t border-[#EAEAEA]">
+              <p className="text-[10px] font-sans uppercase tracking-[0.25em] text-[#888888]">
                 Demo Mode — Authentication Disabled
               </p>
             </div>
